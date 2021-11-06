@@ -5,11 +5,11 @@ plugins {
     kotlin("jvm") version "1.5.31"
     id("org.jetbrains.compose") version "1.0.0-beta3"
     kotlin("plugin.serialization") version "1.5.31"
-
+    `maven-publish`
 }
 
 group = "de.nebdir"
-version = "1.0"
+version = "1.0.0"
 
 repositories {
     google()
@@ -25,4 +25,18 @@ dependencies {
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = "de.nebdir.roughtDrop"
+                artifactId = "core"
+                version = rootProject.version.toString()
+                from(components["java"])
+            }
+        }
+
+    }
 }
