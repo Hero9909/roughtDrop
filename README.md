@@ -9,6 +9,8 @@ Currently its not defined how the modifier should behave if there are multiple c
 
 documentation isn't done yet.
 
+I'm planning to publish this on maven Central, but i currently unshure if i meet all requirements ( except docs that will be done before the first publish).
+
 ## Contributions
 contributions are welcome, please remember to provide some details in your request.
 I'm not good in spell checking and would be happy if someone likes to help me here, so feel free to open a pull request to correct my spelling.
