@@ -6,14 +6,12 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import jdk.jfr.Enabled
 import java.awt.dnd.DropTargetDragEvent
 import java.awt.dnd.DropTargetDropEvent
 import java.awt.dnd.DropTargetEvent
@@ -54,7 +52,6 @@ fun Modifier.acceptDrop(
             override fun dragExit(dte: DropTargetEvent?) {}
 
             override fun drop(dtde: DropTargetDropEvent?) {
-                println("drop evnet")
                 val localSize = size
                 if (dtde != null && localSize != null) {
                     val localOffset = localSize.windowToLocal(
@@ -69,10 +66,8 @@ fun Modifier.acceptDrop(
 
         DisposableEffect(Unit) {
             window.contentPane.dropTarget?.addDropTargetListener(listener)
-            println("added drop target listener")
             onDispose {
                 window.contentPane.dropTarget?.removeDropTargetListener(listener)
-                println("removed drop target listener")
             }
         }
 
