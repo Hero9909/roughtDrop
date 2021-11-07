@@ -28,6 +28,16 @@ tasks.withType<KotlinCompile>() {
 }
 
 afterEvaluate {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Hero9909/roughtDrop")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("TOKEN")
+            }
+        }
+    }
     publishing {
         publications {
             create<MavenPublication>("maven") {
