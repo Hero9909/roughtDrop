@@ -8,3 +8,4 @@ pluginManagement {
 rootProject.name = "roughtDrop"
 include(":roughtDrop")
 include(":examples:simple_drop")
+include(":examples:multi_drop")

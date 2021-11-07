@@ -12,10 +12,21 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import java.awt.dnd.DropTargetDragEvent
-import java.awt.dnd.DropTargetDropEvent
-import java.awt.dnd.DropTargetEvent
-import java.awt.dnd.DropTargetListener
+import java.awt.dnd.*
+
+class RoughtDropTarget : DropTarget() {
+
+    val listeners = mutableListOf<(DropTargetDropEvent) -> Boolean>()
+
+    override fun drop(dtde: DropTargetDropEvent?) {
+        if (dtde != null) {
+            if (listeners.firstOrNull {
+                    it.invoke(dtde)
+                } != null) return
+        }
+        super.drop(dtde)
+    }
+}
 
 /**
  *
@@ -23,7 +34,7 @@ import java.awt.dnd.DropTargetListener
 fun Modifier.acceptDrop(
     window: ComposeWindow,
     enabled: Boolean,
-    onDrop: (DropTargetDropEvent) -> Unit
+    onDrop: (DropTargetDropEvent) -> Boolean
 ): Modifier = composed {
     Modifier.acceptDrop(
         window = window,
@@ -37,7 +48,7 @@ fun Modifier.acceptDrop(
 fun Modifier.acceptDrop(
     window: ComposeWindow,
     enabled: Boolean,
-    onDrop: (DropTargetDropEvent) -> Unit,
+    onDrop: (DropTargetDropEvent) -> Boolean,
     indication: Indication,
     mutableInteractionSource: MutableInteractionSource
 ): Modifier = composed(
@@ -45,29 +56,24 @@ fun Modifier.acceptDrop(
 
         var size by remember { mutableStateOf<LayoutCoordinates?>(null) }
 
-        val listener = object : DropTargetListener {
-            override fun dragEnter(dtde: DropTargetDragEvent?) {}
-            override fun dragOver(dtde: DropTargetDragEvent?) {}
-            override fun dropActionChanged(dtde: DropTargetDragEvent?) {}
-            override fun dragExit(dte: DropTargetEvent?) {}
-
-            override fun drop(dtde: DropTargetDropEvent?) {
-                val localSize = size
-                if (dtde != null && localSize != null) {
-                    val localOffset = localSize.windowToLocal(
-                        Offset(dtde.location.x.toFloat(), dtde.location.y.toFloat())
-                    )
-                    if (localOffset.isValid() && localOffset.x>0 && localOffset.x < localSize.size.width && localOffset.y > 0 && localOffset.y < localSize.size.height)
-                        onDrop(dtde)
-                }
-            }
-
+        val listener = { it: DropTargetDropEvent ->
+            val localSize = size
+            if (localSize != null) {
+                val localOffset = localSize.windowToLocal(
+                    Offset(it.location.x.toFloat(), it.location.y.toFloat())
+                )
+                if (localOffset.isValid() && localOffset.x > 0 && localOffset.x < localSize.size.width && localOffset.y > 0 && localOffset.y < localSize.size.height) {
+                    onDrop(it)
+                } else
+                    false
+            } else
+                false
         }
 
         DisposableEffect(Unit) {
-            window.contentPane.dropTarget?.addDropTargetListener(listener)
+            (window.contentPane.dropTarget as RoughtDropTarget).listeners.add(listener)
             onDispose {
-                window.contentPane.dropTarget?.removeDropTargetListener(listener)
+                (window.contentPane.dropTarget as RoughtDropTarget).listeners.remove(listener)
             }
         }
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.singleWindowApplication
+import de.nebdir.roughtdrop.RoughtDropTarget
 import de.nebdir.roughtdrop.acceptDrop
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
@@ -27,7 +28,7 @@ import java.io.File
 
 fun main() {
     singleWindowApplication {
-        window.contentPane.dropTarget = DropTarget()
+        window.contentPane.dropTarget = RoughtDropTarget()
         MaterialTheme {
             Surface {
                 Box(
@@ -47,6 +48,7 @@ fun main() {
                                     it.transferable.getTransferData(DataFlavor.javaFileListFlavor) as? List<File>
                                         ?: emptyList<File>()
                                 file = files.firstOrNull()
+                                true
                             }.clickable(enabled = file != null) {
                                 file = null
                             },
