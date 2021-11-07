@@ -27,26 +27,23 @@ tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
 }
 
-afterEvaluate {
+publishing {
     repositories {
-        maven {
+        maven("https://maven.pkg.github.com/Hero9909/roughtDrop") {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/Hero9909/roughtDrop")
             credentials {
                 username = System.getenv("USERNAME")
                 password = System.getenv("TOKEN")
             }
         }
     }
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
-                groupId = "de.nebdir.roughtDrop"
-                artifactId = "core"
-                version = rootProject.version.toString()
-                from(components["java"])
-            }
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "de.nebdir.roughtDrop"
+            artifactId = "core"
+            version = rootProject.version.toString()
+            from(components["java"])
         }
-
     }
+
 }
