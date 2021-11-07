@@ -41,7 +41,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "de.nebdir.roughtDrop"
             artifactId = "core"
-            version = rootProject.version.toString()
+            version = project.version.toString()
             from(components["java"])
         }
     }
